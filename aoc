@@ -1,0 +1,3 @@
+#!/bin/bash
+# Wrapper script for Advent of Code CLI
+exec ~/.local/bin/uv run python aoc.py "$@"

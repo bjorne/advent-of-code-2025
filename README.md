@@ -22,7 +22,6 @@ This project uses [uv](https://github.com/astral-sh/uv) for dependency managemen
 
 ```
 advent-of-code-2025/
-├── aoc                    # CLI wrapper script
 ├── aoc.py                 # CLI implementation
 ├── day01.py               # Day 1 solution
 ├── day01.txt              # Day 1 input
@@ -34,12 +33,12 @@ advent-of-code-2025/
 
 ## Commands
 
-All commands use the `./aoc` wrapper script:
+All commands use `uv run ./aoc.py`:
 
 ### Create a New Day
 
 ```bash
-./aoc new <day>
+uv run ./aoc.py new <day>
 ```
 
 Creates three files for the specified day:
@@ -50,36 +49,36 @@ Creates three files for the specified day:
 
 Example:
 ```bash
-./aoc new 5
+uv run ./aoc.py new 5
 ```
 
 ### Run Tests
 
 Run all tests:
 ```bash
-./aoc test
+uv run ./aoc.py test
 ```
 
 Run tests for a specific day:
 ```bash
-./aoc test <day>
+uv run ./aoc.py test <day>
 ```
 
 Example:
 ```bash
-./aoc test 5
+uv run ./aoc.py test 5
 ```
 
 ### Watch Mode (Auto-test on Save)
 
 Watch files and automatically re-run tests when they change:
 ```bash
-./aoc watch <day>
+uv run ./aoc.py watch <day>
 ```
 
 Example:
 ```bash
-./aoc watch 5
+uv run ./aoc.py watch 5
 ```
 
 This watches `day05.py`, `test_day05.py`, and `day05_example.txt` and runs tests whenever any of them change. Press Ctrl+C to stop.
@@ -88,12 +87,12 @@ This watches `day05.py`, `test_day05.py`, and `day05_example.txt` and runs tests
 
 Run a day's solution against its input file:
 ```bash
-./aoc run <day>
+uv run ./aoc.py run <day>
 ```
 
 Example:
 ```bash
-./aoc run 5
+uv run ./aoc.py run 5
 ```
 
 This runs `day05.py` with input from `day05.txt` and prints the results.
@@ -102,7 +101,7 @@ This runs `day05.py` with input from `day05.txt` and prints the results.
 
 1. **Create files for a new day:**
    ```bash
-   ./aoc new 5
+   uv run ./aoc.py new 5
    ```
 
 2. **Add example input from problem description:**
@@ -116,7 +115,7 @@ This runs `day05.py` with input from `day05.txt` and prints the results.
 
 4. **Start watch mode:**
    ```bash
-   ./aoc watch 5
+   uv run ./aoc.py watch 5
    ```
 
 5. **Implement solution:**
@@ -127,7 +126,7 @@ This runs `day05.py` with input from `day05.txt` and prints the results.
 
 6. **Run against actual input:**
    ```bash
-   ./aoc run 5
+   uv run ./aoc.py run 5
    ```
 
 7. **Repeat for part 2:**
@@ -135,21 +134,6 @@ This runs `day05.py` with input from `day05.txt` and prints the results.
    - Remove `@pytest.mark.skip` decorator
    - Implement `part2()` function
    - Run solution again
-
-## Optional: Add to PATH
-
-To run `aoc` from anywhere without `./`, add this to your `~/.bashrc` or `~/.zshrc`:
-
-```bash
-export PATH="$PATH:/home/bjorne/code/advent-of-code-2025"
-```
-
-Then you can use:
-```bash
-aoc new 5
-aoc watch 5
-aoc run 5
-```
 
 ## File Templates
 

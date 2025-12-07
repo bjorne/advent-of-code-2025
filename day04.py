@@ -9,18 +9,16 @@ def parse(input: str) -> set[Point]:
                 rolls.add(Point(i, j))
     return rolls
 
-def part1(input: str) -> int:
-    """Solve part 1."""
-    rolls = parse(input)
-
-    count = 0
+def accessible(rolls: set[Point]):
     for p in rolls:
         s = sum([1 if p + o in rolls else 0 for o in DIRS])
         if s < 4:
-            count += 1 
-        
-    return count
+            yield p
 
+def part1(input: str) -> int:
+    """Solve part 1."""
+    rolls = parse(input)
+    return len(list(accessible(rolls)))
 
 def part2(input: str) -> int:
     """Solve part 2."""
@@ -29,10 +27,8 @@ def part2(input: str) -> int:
     removed = 0
     while True:
         to_remove = set()
-        for p in rolls:
-            s = sum([1 if p + o in rolls else 0 for o in DIRS])
-            if s < 4:
-                to_remove.add(p)
+        for p in accessible(rolls):
+            to_remove.add(p)
         if len(to_remove) == 0:
             break
         removed += len(to_remove)

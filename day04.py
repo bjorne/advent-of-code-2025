@@ -1,58 +1,17 @@
-from __future__ import annotations
-from dataclasses import dataclass
+from lib.grid import Point, Rect, DIRS
 
-@dataclass(frozen=True)
-class Point:
-    x: int
-    y: int
-
-    def __add__(self, other: Point) -> Point:
-        return Point(self.x + other.x, self.y + other.y)
-
-ORIGIN = Point(0, 0)
-UP = Point(0, 1)
-DOWN = Point(0, -1)
-LEFT = Point(-1, 0)
-RIGHT = Point(1, 0)
-DIRS = [
-    UP + LEFT,
-    UP,
-    UP + RIGHT,
-    RIGHT,
-    DOWN + RIGHT,
-    DOWN,
-    DOWN + LEFT,
-    LEFT
-]
-            
-
-@dataclass(frozen=True)
-class Rect:
-    a: Point
-    b: Point
-
-    def contains(self, p: Point) -> bool:
-        a = self.a
-        b = self.b
-        return min(a.x, b.x) <= p.x <= max(a.x, b.x) and min(a.y, b.y) <= p.y <= max(a.y, b.y)
-
-def parse(input: str) -> (Rect, set[Point]):
+def parse(input: str) -> set[Point]:
     input = input.strip().split("\n")
-    w = len(input[0])
-    h = len(input)
-    rect = Rect(Point(0, 0), Point(w-1, h-1))
-    print(rect)
-
     rolls: set[Point] = set()
     for j, row in enumerate(input):
         for i, s in enumerate(row):
             if s == '@':
                 rolls.add(Point(i, j))
-    return rect, rolls
+    return rolls
 
 def part1(input: str) -> int:
     """Solve part 1."""
-    rect, rolls = parse(input)
+    rolls = parse(input)
 
     count = 0
     for p in rolls:
@@ -65,19 +24,19 @@ def part1(input: str) -> int:
 
 def part2(input: str) -> int:
     """Solve part 2."""
-    rect, rolls = parse(input)
+    rolls = parse(input)
 
     removed = 0
     while True:
-        to_remove = []
+        to_remove = set()
         for p in rolls:
             s = sum([1 if p + o in rolls else 0 for o in DIRS])
             if s < 4:
-                to_remove.append(p)
+                to_remove.add(p)
         if len(to_remove) == 0:
             break
         removed += len(to_remove)
-        rolls = rolls - set(to_remove)
+        rolls = rolls - to_remove
             
     return removed
 

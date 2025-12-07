@@ -3,7 +3,7 @@ from functools import cache
 
 def parse(input: str) -> (list[str], set[Point], Point):
     lines = input.strip().split("\n")
-    splitters: set[Point] = set()
+    splitters: set[Point] = {}
     start = None
     for j, line in enumerate(lines):
         for i, s in enumerate(line):
@@ -17,7 +17,7 @@ def parse(input: str) -> (list[str], set[Point], Point):
 def part1(input: str) -> int:
     """Solve part 1."""
     lines, splitters, start = parse(input)
-    beams = set([start.x])
+    beams = {start.x}
     splits = 0
     for y in range(start.y + 1, len(lines)):
         new_beams = beams.copy()
@@ -33,7 +33,7 @@ def part1(input: str) -> int:
 def part2(input: str) -> int:
     """Solve part 2."""
     lines, splitters, start = parse(input)
-    beams = set([start.x])
+    beams = {start.x}
 
     @cache
     def timelines(beam: Point) -> int:

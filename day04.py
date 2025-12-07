@@ -2,7 +2,7 @@ from lib.grid import Point, Rect, DIRS
 
 def parse(input: str) -> set[Point]:
     input = input.strip().split("\n")
-    rolls: set[Point] = set()
+    rolls: set[Point] = {}
     for j, row in enumerate(input):
         for i, s in enumerate(row):
             if s == '@':
@@ -26,7 +26,7 @@ def part2(input: str) -> int:
 
     removed = 0
     while True:
-        to_remove = set()
+        to_remove = {}
         for p in accessible(rolls):
             to_remove.add(p)
         if len(to_remove) == 0:

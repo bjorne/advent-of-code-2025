@@ -34,7 +34,6 @@ def part2(input: str) -> int:
     """Solve part 2."""
     lines, splitters, start = parse(input)
     beams = set([start.x])
-    splits = 0
 
     @cache
     def timelines(beam: Point) -> int:

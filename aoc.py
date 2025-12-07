@@ -114,14 +114,6 @@ def run_tests(day: int = None) -> None:
     sys.exit(result.returncode)
 
 
-def watch_tests() -> None:
-    """Watch files and re-run tests on changes."""
-
-    cmd = [UV, "run", "ptw", "."]
-    result = subprocess.run(cmd)
-    sys.exit(result.returncode)
-
-
 def run_solution(day: int) -> None:
     """Run a day's solution against its input."""
     day_str = f"{day:02d}"
@@ -154,8 +146,6 @@ def main():
     test_parser = subparsers.add_parser("test", help="Run tests")
     test_parser.add_argument("day", type=int, nargs="?", help="Specific day to test (optional)")
     
-    watch_parser = subparsers.add_parser("watch", help="Watch and re-run tests on file changes")
-    
     # run command
     run_parser = subparsers.add_parser("run", help="Run a day's solution")
     run_parser.add_argument("day", type=int, help="Day number to run")
@@ -166,8 +156,6 @@ def main():
         create_new_day(args.day)
     elif args.command == "test":
         run_tests(args.day)
-    elif args.command == "watch":
-        watch_tests(args.day)
     elif args.command == "run":
         run_solution(args.day)
     else:

@@ -18,12 +18,9 @@ def connect_circuits(input: str) -> Generator[tuple[tuple[Point, Point], set[fro
     sorted_dist = sorted(dist.items(), key=lambda x: x[1])
 
     circuits: set[frozenset[Point]] = set((frozenset([j]) for j in junctions))
-    a, b = None, None
     for (a, b), _ in sorted_dist:
-        ac = next((circuit for circuit in circuits if a in circuit), None)
-        bc = next((circuit for circuit in circuits if b in circuit), None)
-        assert ac
-        assert bc
+        ac = next((circuit for circuit in circuits if a in circuit))
+        bc = next((circuit for circuit in circuits if b in circuit))
         if ac != bc:
             # join two circuits
             circuits.remove(ac)

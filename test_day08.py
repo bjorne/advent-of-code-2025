@@ -15,4 +15,4 @@ def test_part1(example_input):
 
 def test_part2(example_input):
     """Test part 2 with example input."""
-    assert part2(example_input, num=10) == 25272
+    assert part2(example_input) == 25272

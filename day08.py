@@ -2,110 +2,47 @@ from operator import itemgetter
 from pprint import pp
 import operator
 from functools import reduce
-from itertools import combinations
+from itertools import combinations, islice, dropwhile
+from typing import Generator
 
 from lib.grid_3d import Point
 
-def connect(input: str, num: int) -> int:
+def connect_circuits(input: str) -> Generator[tuple[tuple[Point, Point], set[frozenset[Point]]]]:
     junctions = set()
     for line in input.strip().split("\n"):
         x, y, z = map(int, line.split(","))
         junctions.add(Point(x, y, z))
-
-    connections = set()
-    dist = dict()
+    dist: dict[tuple[Point, Point], float] = dict()
     for x, y in combinations(junctions, 2):
         dist[(x,y)] = x.euclidian_dist(y)
+    sorted_dist = sorted(dist.items(), key=lambda x: x[1])
 
-    connections = list(map(itemgetter(0), sorted(dist.items(), key=lambda x: x[1])[:num]))
-    # connections.add(tuple(sorted((closest[0], closest[1]))))
+    circuits: set[frozenset[Point]] = set((frozenset([j]) for j in junctions))
+    a, b = None, None
+    for (a, b), _ in sorted_dist:
+        ac = next((circuit for circuit in circuits if a in circuit), None)
+        bc = next((circuit for circuit in circuits if b in circuit), None)
+        assert ac
+        assert bc
+        if ac != bc:
+            # join two circuits
+            circuits.remove(ac)
+            circuits.remove(bc)
+            circuits.add(ac | bc)
 
-    def expand_circuit(circuit: list[Point], p: Point) -> list[Point]:
-        for c in connections:
-            next = None
-            if c[0] == p:
-                next = c[1]
-            if c[1] == p:
-                next = c[0]
-            if next:
-                if next not in circuit:
-                    circuit.append(next)
-                    list(set(circuit)).sort()
-                    circuit = sorted(list(set(circuit + expand_circuit(circuit, next))))
-
-        return circuit
-
-    circuits = set()
-    for p in junctions:
-        circuits.add(tuple(expand_circuit([p], p)))
-    return reduce(operator.mul, sorted(map(len, circuits))[-3:])
+        yield ((a, b), circuits)
 
 
 def part1(input: str, num=1000) -> int:
     """Solve part 1."""
-    return connect(input, num)
+    last = next(islice(connect_circuits(input), num-1, num))
+    return reduce(operator.mul, sorted([len(c) for c in last[1]], reverse=True)[0:3])
 
 
-def part2(input: str, num=1000) -> int:
+def part2(input: str) -> int:
     """Solve part 2."""
-    junctions = set()
-    for line in input.strip().split("\n"):
-        x, y, z = map(int, line.split(","))
-        junctions.add(Point(x, y, z))
-
-    dist = dict()
-    for x, y in combinations(junctions, 2):
-        dist[(x,y)] = x.euclidian_dist(y)
-
-    sorted_dist = sorted(dist.items(), key=lambda x: x[1])
-    connections = list(map(itemgetter(0), sorted_dist[:num]))
-    # connections.add(tuple(sorted((closest[0], closest[1]))))
-
-    def expand_circuit(circuit: list[Point], p: Point) -> list[Point]:
-        for c in connections:
-            next = None
-            if c[0] == p:
-                next = c[1]
-            if c[1] == p:
-                next = c[0]
-            if next:
-                if next not in circuit:
-                    circuit.append(next)
-                    list(set(circuit)).sort()
-                    circuit = sorted(list(set(circuit + expand_circuit(circuit, next))))
-
-        return circuit
-
-    def compute_circuits():
-        circuits = set()
-        for p in junctions:
-            circuits.add(tuple(expand_circuit([p], p)))
-        return circuits
-
-    circuits = compute_circuits()
-    a, b = None, None
-    for i in range(num, len(sorted_dist)):
-        a, b = sorted_dist[i][0]
-        connections.append((a,b))
-        ac = [circuit for circuit in circuits if a in circuit][0]
-        bc = [circuit for circuit in circuits if b in circuit][0]
-        if not ac and not bc:
-            circuits.add(tuple(sorted((a, b))))
-        elif ac and bc and ac == bc:
-            continue
-        elif ac and bc:
-            circuits.remove(ac)
-            circuits.remove(bc)
-            circuits.add(tuple(sorted(ac + bc)))
-            if len(circuits) <= 1:
-                break
-        elif ac:
-            ac.add(b)
-        elif bc:
-            ac.add(a)
-        else:
-            raise Exception("unreachable")
-
+    last = next(islice(dropwhile(lambda tup: tup[0] < 10 or len(tup[1][1]) > 1, enumerate(connect_circuits(input))), 1), [])
+    (a, b), _ = last[1]
     return a.x * b.x
 
 

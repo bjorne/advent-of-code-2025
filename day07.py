@@ -3,7 +3,7 @@ from functools import cache
 
 def parse(input: str) -> (list[str], set[Point], Point):
     lines = input.strip().split("\n")
-    splitters: set[Point] = {}
+    splitters: set[Point] = set()
     start = None
     for j, line in enumerate(lines):
         for i, s in enumerate(line):

@@ -83,38 +83,30 @@ def part2(input: str, num=1000) -> int:
         return circuits
 
     circuits = compute_circuits()
-
+    a, b = None, None
     for i in range(num, len(sorted_dist)):
-        pair = sorted_dist[i][0]
-        connections.append(pair)
-        a = set([circuit for circuit in circuits if pair[0] in circuit])
-        b = set([circuit for circuit in circuits if pair[1] in circuit])
-
-        if not a and not b:
-            circuits.add(sorted([a, b]))
+        a, b = sorted_dist[i][0]
+        connections.append((a,b))
+        ac = [circuit for circuit in circuits if a in circuit][0]
+        bc = [circuit for circuit in circuits if b in circuit][0]
+        if not ac and not bc:
+            circuits.add(tuple(sorted((a, b))))
+        elif ac and bc and ac == bc:
+            continue
+        elif ac and bc:
+            circuits.remove(ac)
+            circuits.remove(bc)
+            circuits.add(tuple(sorted(ac + bc)))
+            if len(circuits) <= 1:
+                break
+        elif ac:
+            ac.add(b)
+        elif bc:
+            ac.add(a)
         else:
-            # circuits where only a exist
-            for circuit in a - b:
-                circuits.add(pair[1]) # add b
+            raise Exception("unreachable")
 
-            # circuits where only b exist
-            for circuit in (b - a):
-                circuits.add(pair[0]) # add a
-
-            # circuits that can be linked
-            for ca, cb in combinations((b | a) - (b & a), 2):
-                if ca in a and cb in b:
-                    print(a)
-                    circuits.remove(a)
-                    circuits.remove(b)
-                    circuits.add(a | b)
-
-        if len(compute_circuits()) <= 1:
-            break
-        # connections.append(
-
-    return pair[0].x * pair[1].x
-
+    return a.x * b.x
 
 
 if __name__ == "__main__":
